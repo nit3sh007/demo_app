@@ -1,0 +1,13 @@
+# Render Blueprint for the demo shop. This repo contains only the shop; the agent + dashboard live in a separate repo.
+services:
+  - type: web
+    name: acme-shop
+    runtime: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    # One worker: errors wait in an in-memory outbox, so every request must hit the same process.
+    startCommand: gunicorn webapp:app --workers 1 --threads 4 --bind 0.0.0.0:$PORT
+    healthCheckPath: /healthz
+    envVars:
+      - key: AUTOFIX_TOKEN
+        generateValue: true      # copy this value into the agent's .env after the first deploy
