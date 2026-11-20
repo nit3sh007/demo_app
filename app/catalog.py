@@ -8,4 +8,9 @@ PRODUCTS = [
 
 
 def cheapest_in_category(category: str) -> dict:
-    return min((p for p in PRODUCTS if p["category"] == category), key=lambda p: p["price"])
+    # Collect matching products first to safely handle empty categories.
+    matches = [p for p in PRODUCTS if p["category"] == category]
+    if not matches:
+        # No product in this category – return empty dict instead of raising.
+        return {}
+    return min(matches, key=lambda p: p["price"])
